@@ -1,0 +1,100 @@
+<script src="https://unpkg.com/vue@3"></script>
+<style>
+  .select_box {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .select_show {
+    padding-left: 20px;
+    width: 180px;
+    height: 36px;
+    line-height: 36px;
+    cursor: pointer;
+    border: #333 solid 1px;
+  }
+  .option_box {
+    position: absolute;
+    top: 40px;
+    width: 200px;
+    max-height: 90px;
+    overflow-y: auto;
+    border: #333 solid 1px;
+  }
+  .option_item {
+    display: block;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .option_item:hover {
+    background-color: bisque;
+  }
+  .option_item_active {
+    background-color: bisque;
+  }
+  input {
+    margin-left: 20px;
+    width: 180px;
+    height: 36px;
+  }
+  button {
+    margin-left: 20px;
+  }
+</style>
+<div id="app">
+  <div class="select_box">
+    <div class="select_show" @click="toggleOptions">
+      {{ activeItem }}
+    </div>
+    <input v-model="text" type="text" />
+    <button @click="add">追加</button>
+    <div class="option_box" v-if="isShowOptions">
+      <span 
+        class="option_item" 
+        :class="{ 'option_item_active': activeItem === item  }" 
+        @click="selectItem(item)" 
+        v-for="item in optionItemList"
+      >
+        {{item}}
+      </span>
+    </div>
+  </div>
+</div>
+<script>
+  const { createApp, ref, reactive } = Vue
+
+  createApp({
+    setup() {
+      const activeItem = ref('')
+      const text = ref('')
+      const isShowOptions = ref(false)
+      const optionItemList = reactive([1, 2, 3, 4, 5])
+      const selectItem = (item) => {
+        activeItem.value = item
+        isShowOptions.value = !isShowOptions.value
+      }
+      const toggleOptions = () => {
+        isShowOptions.value = !isShowOptions.value
+      }
+      const add = () => {
+        const textTrim = text.value.trim()
+        if (textTrim) {
+          optionItemList.push(textTrim)
+          activeItem.value = textTrim
+          return
+        }
+        alert('追加内容不能为空')
+      }
+      return {
+        text,
+        isShowOptions,
+        optionItemList,
+        activeItem,
+        selectItem,
+        add,
+        toggleOptions
+      }
+    }
+  }).mount('#app')
+</script>
